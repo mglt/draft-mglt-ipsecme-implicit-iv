@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<?rfc linefile="1:/tmp/CGI11956.1"?>
+<?rfc linefile="1:/tmp/CGI11956.1"?>
+<?rfc toc="yes"?>
+<!-- generate a table of contents -->
+<?rfc symrefs="yes"?>
+<!-- use anchors instead of numbers for references -->
+<?rfc sortrefs="yes" ?>
+<!-- alphabetize the references -->
+<?rfc compact="yes" ?>
+<!-- conserve vertical whitespace -->
+<?rfc subcompact="no" ?>
+<!-- but keep a blank line between list items -->
+
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
+        <!ENTITY RFC2119 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
+        <!ENTITY RFC3602 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3602.xml">
+        <!ENTITY RFC3686 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3686.xml">
+        <!ENTITY RFC4104 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4104.xml">
+        <!ENTITY RFC4106 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4106.xml">
+        <!ENTITY RFC4303 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4303.xml">
+        <!ENTITY RFC4309 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4309.xml">
+        <!ENTITY RFC4434 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4434.xml">
+        <!ENTITY RFC7296 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7296.xml">
+        <!ENTITY RFC7634 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7634.xml">
+         <!ENTITY I-D.ietf-ipsecme-rfc4307bis PUBLIC "" "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-ipsecme-rfc4307bis.xml">
+         <!ENTITY I-D.mglt-ipsecme-rfc7321bis PUBLIC "" "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.mglt-ipsecme-rfc7321bis.xml">
+
+        ]>
+
+<rfc category="std"
+     docName="draft-mglt-ipsecme-implicit-iv-01.txt"
+     ipr="trust200902">
+    <front>
+        <title abbrev="Implicit IV">Implicit IV for Counter-based Ciphers in IPsec </title>
+        <author fullname="Daniel Migault" initials="D." surname="Migault" role="editor">
+            <organization>Ericsson</organization>
+            <address>
+                <postal>
+         <street>8400 boulevard Decarie</street>
+          <city>Montreal, QC H4P 2N2</city>
+          <country>Canada</country>
+        </postal>
+        <!--<phone>+33 1 45 29 60 52</phone> -->
+        <email>daniel.migault@ericsson.com</email>
+
+            </address>
+        </author>
+
+        <author fullname="Tobias Guggemos" initials="T." surname="Guggemos" role="editor">
+            <organization>LMU Munich</organization>
+            <address>
+                <postal>
+                    <street>Am Osteroesch 9</street>
+                    <city>87637 Seeg</city>
+                    <region>Bavaria</region>
+                    <country>Germany</country>
+                </postal>
+                <phone/>
+                <facsimile/>
+                <email>tobias.guggemos@gmail.com</email>
+                <uri/>
+            </address>
+        </author>
+
+    <author initials="Y." surname="Nir" fullname="Yoav Nir">
+      <organization abbrev="Check Point">Check Point Software Technologies Ltd.</organization>
+      <address>
+        <postal>
+          <street>5 Hasolelim st.</street>
+          <city>Tel Aviv</city>
+          <code>6789735</code>
+          <country>Israel</country>
+        </postal>
+        <email>ynir.ietf@gmail.com</email>
+      </address>
+    </author>
+
+
+
+        <date/>
+        <area>INTERNET</area>
+        <workgroup>IPSECME</workgroup>
+        <abstract>
+            <t>IPsec ESP sends an initialization vector (IV) or nonce in each packet, adding 8 or 16 octets. Some algorithms such as AES-GCM, AES-CCM, AES-CTR and ChaCha20-Poly1305 require a unique nonce but do not require an unpredictable nonce. When using such algorithms the packet counter value can be used to generate a nonce, saving 8 octets per packet. This document describes how to do this.</t>
+        </abstract>
+    </front>
+
+    <middle>
+        <section title="Requirements notation">
+            <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in <xref target="RFC2119"/>.</t>
+        </section>
+        <section anchor="intro" title="Introduction">
+              <t>Counter-based AES modes of operation such as AES-CTR (<xref target="RFC3686"/>), AES-CCM (<xref target="RFC4309"/>), and AES-GCM (<xref target="RFC4106"/>) require the specification of an nonce for each ESP packet. The same applies for ChaCha20-Poly1305 (<xref target="RFC7634"/>. Currently this nonce is sent in each ESP packet (<xref target="RFC4303"/>). This practice is designated in this document as "explicit nonce".</t>
+
+              <t>In some context, such as IoT, it may be preferable to avoid carrying the extra bytes associated to the IV and instead generate it locally on each peer. The local generation of the nonce is designated in this document as "implicit IV".</t>
+
+              <t>The size of this nonce depends on the specific algorithm, but all of the algorithms mentioned above take an 8-octet nonce.</t>   
+
+              <t>This document defines how to compute the nonce locally when it is implicit. It also specifies how peers agree with the Internet Key Exchange version 2 (IKEv2 - <xref target="RFC7296"/>) on using an implicit IV versus an explicit IV.</t>
+
+              <t>This document limits its scope to the algorithms mentioned above. Other algorithms with similar properties may later be defined to use this extension.</t>
+<t> This document does not consider AES-CBC (<xref target="RFC3602"/>)as AES-CBC requires the IV to be unpredictable. Deriving it directly from the packet counter as described below is insecure.</t>
+
+        </section>
+
+        <section anchor="sec:terminology" title="Terminology">
+            <t>
+                <list style="symbols">
+                    <t>IoT: Internet of Things</t>
+                    <t>IV: Initialization Vector. Although security requirements vary, the common usage of this term implies that the value is unpredictable.</t>
+                    <t>Nonce: a fixed-size octet string used only once. This is similar to IV, except that in common usage there is no implication of non-predictability.</t>
+                </list>
+            </t>
+        </section>
+
+<!--
+        <section anchor="sec-aes-cbc" title="Implicit IV with AES CBC">
+            <t>With AES-CBC, the IV is 16 bytes, random and unpredictable. In this document, the binding between IV and ESP packet is performed using the Sequence Number or the Extended Sequence Number. A clear text payload is derived from the Sequence Number or the Extended Sequence Number. In order to generate the IV randomly, AES is used as a random permutation. A dedicated 16 byte key is used for each peer. key_iv_initiator (resp. key_iv_responder) is used to derive the IV emitted by the initiator (resp. the responder).</t>
+
+       <t>Keys key_iv_initiator and key_iv_responder MUST be agreed prior IPsec packets are exchanged. When IKEv2 <xref target="RFC7296"/> is used these keys are derived from the KEYMAT. key_iv_initiator is the first key generated, followed by key_iv_responder.</t>
+ 
+<t><xref target="fig-aes-cbc-ct-sn"/> (resp. <xref target="fig-aes-cbc-ct-esn"/>) defines a clear text payload derived from a 4 byte Sequence Number (resp. a 8 byte Extended Sequence Number)</t>
+
+            <figure anchor="fig-aes-cbc-ct-sn" title="Clear Text Payload for AES-CBC">
+                    <artwork><![CDATA[
+0                   1                   2                   3
+0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
+|                                                               | 
+|                              Zero                             | 
+|                                                               | 
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
+|                      Sequence Number                          | 
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+                ]]></artwork>
+            </figure>
+        <t>Where,
+                <list hangIndent="3" style="hanging">
+                    <t hangText="-">Sequence Number: the 4 byte Sequence Number carried in the ESP packet.</t>
+                    <t hangText="-">Zero: a 12 byte array with all bits set to zero.</t>
+                </list>
+        </t>
+
+            <figure anchor="fig-aes-cbc-ct-esn" title="Clear Text Payload for AES-CBC with Extended Sequence Number">
+                    <artwork><![CDATA[
+0                   1                   2                   3
+0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
+|                              Zero                             | 
+|                                                               | 
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
+|                         Extended                              |
+|                      Sequence Number                          | 
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+                ]]></artwork>
+            </figure>
+
+        <t>Where,
+                <list hangIndent="3" style="hanging">
+                    <t hangText="-">Extended Sequence Number: the 8 byte Extended Sequence Number of the Security Association. The 4 byte low order bytes are carried in the ESP packet.</t>
+                    <t hangText="-">Zero: a 8 byte array with all bits set to zero.</t>
+                </list>
+        </t>
+
+        </section>
+-->
+
+        <section anchor="sec-aes-ctr-ccm-cgm"  title="Implicit IV">
+
+            <t>With the algorithms listed in <xref target="intro"/>, the 8 byte nonce MUST NOT repeat. The binding between a ESP packet and its nonce is provided using the Sequence Number or the Extended Sequence Number. <xref target="fig-aes-ctr-ccm-gcm-iv-sn"/> and <xref target="fig-aes-ctr-ccm-gcm-iv-esn"/> represent the IV with a regular 4-byte Sequence Number and with an 8-byte Extended Sequence Number respectively.</t>
+
+            <figure anchor="fig-aes-ctr-ccm-gcm-iv-sn" title="Implicit IV with a 4 byte Sequence Number">
+                    <artwork><![CDATA[
+0                   1                   2                   3
+0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
+|                              Zero                             | 
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
+|                      Sequence Number                          | 
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+                ]]></artwork>
+            </figure>
+        <t><list style="symbols">
+            <t>Sequence Number: the 4 byte Sequence Number carried in the ESP packet.</t>
+            <t>Zero: a 4 byte array with all bits set to zero.</t>
+                </list>
+        </t>
+
+            <figure anchor="fig-aes-ctr-ccm-gcm-iv-esn" title="Implicit IV with an 8 byte Extended Sequence Number">
+                    <artwork><![CDATA[
+0                   1                   2                   3
+0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
+|                         Extended                              |
+|                      Sequence Number                          | 
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+                ]]></artwork>
+            </figure>
+
+        <t><list style="symbols">
+            <t>Extended Sequence Number: the 8 byte Extended Sequence Number of the Security Association. The 4 byte low order bytes are carried in the ESP packet.</t>
+                </list>
+        </t>
+    </section>
+<!--
+    <section anchor="nego" title="Implicit IV Agreement">
+    <t>NOTE: THIS SECTION SHOWS SEVERAL WAYS TO DO THE SAME THING. OBVIOUSLY THIS DOCUMENT WILL NOT BE PUBLISHED LIKE THAT. WE EXPECT WG DISCUSSION TO PARE THIS DOWN TO JUST ONE WAY OF NEGOTIATING THE USE OF IMPLICIT IV (IIV).</t>
+    <t>Negotiation of the use of implicit IV can be done in 3 different ways: <list style="symbols">
+         <t> An IMPLICIT IV Transform Type. A proposal that contains this transform type requires (if accepted) that IPsec use the implicit IV and not include an explicit IV in the packets. To facilitate backward compatibility with non-supporting implementations the Initiator SHOULD add another proposal that does not include this transform type as well as cryptographic suite the Initiator does not support the implicit IV.</t>
+         <t> An IMPLICIT IV Transform ID. This doubles the number of ENCR transform IDs by creating an ENCR_AES_CCM_16_IIV for each ENCR_AES_CCM_16.</t>
+          <t> An IMPLICIT IV Transform Attribute, which would be associated to a Transform Type ID, specifying the use of an implicit IV. marks a particular ENCR transform as using implicit IVs. To facilitate backward compatibility with non-supporting implementations the Initiator SHOULD add another ENCR transform for each algorithm so marked. In other words, for each ENCR_AES_CCM_16 with keylength=256 and IIV=1, there will need to be an ENCR_AES_CCM_16 with keylength=256 and no IIV attribute.</t>
+    </list>
+    </t>
+
+    </section>
+-->
+
+    <section title="Initiator Behavior">
+      <t> An initiator supporting this feature SHOULD propose implicit IV for all relevant algorithms. To facilitate backward compatibility with non-supporting peers the initiator SHOULD also include those same algorithms without IIV. This may require extra transforms.</t>
+    </section>
+    <section title="Responder Behavior">
+      <t> The rules of SA payload processing ensure that the responder will never send an SA payload containing the IIV indicator to an initiator that does not support IIV.</t>
+    </section>
+    <section title="Security Consideration">
+    <t>Nonce generation for these algorithms has not been explicitly defined. It has been left to the implementation as long as certain security requirements are met. This document provides an explicit and normative way to generate IVs. The mechanism described in this document meets the IV security requirements of all relevant algorithms.</t>
+
+    </section>
+
+    <section title="IANA Considerations">
+<t>AES-CTR, AES-CCM, AES-GCM and ChaCha20-Poly1305 are likely to implement the implicit IV described in this document. This section limits assignment of new code points to the recommended suites provided in  <xref target="I-D.ietf-ipsecme-rfc4307bis"/> and <xref target="I-D.mglt-ipsecme-rfc7321bis"/>, thus the new Transform Type 1 - Encryption Algorithm Transform IDs are as defined below:
+    <list hangIndent="3" style="hanging">
+        <t hangText="-">ENCR_AES-CCM_8_IIV</t> 
+        <t hangText="-">ENCR_AES-GCM_16_IIV</t> 
+        <t hangText="-">ENCR_CHACHA20-POLY1305_IIV</t> 
+    </list>
+    </t>
+	</section>
+    
+    </middle>
+    <back>
+        <references title="Normative References">
+            &RFC2119;
+            &RFC3602;
+            &RFC3686;
+            &RFC4106;
+            &RFC4303;
+            &RFC4309;
+            &RFC7296;
+            &RFC7634;
+        </references>
+
+       
+        <references title="Informational References">
+            &I-D.ietf-ipsecme-rfc4307bis;
+            &I-D.mglt-ipsecme-rfc7321bis;
+        </references>
+
+        <section title="Document Change Log">
+        </section>
+    </back>
+</rfc>
