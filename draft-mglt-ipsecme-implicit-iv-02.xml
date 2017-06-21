@@ -31,7 +31,7 @@
         ]>
 
 <rfc category="std"
-     docName="draft-mglt-ipsecme-implicit-iv-03"
+     docName="draft-mglt-ipsecme-implicit-iv-04"
      ipr="trust200902">
     <front>
         <title abbrev="Implicit IV">Implicit IV for Counter-based Ciphers in IPsec </title>
@@ -66,7 +66,7 @@
         </author>
 
      <author initials="Y." surname="Nir" fullname="Yoav Nir">
-      <organization abbrev=“Dell EMC”>Dell EMC</organization>
+      <organization >Dell EMC</organization>
       <address>
         <postal>
           <street>9 Andrei Sakharov St</street>
