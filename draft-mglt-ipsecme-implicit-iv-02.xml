@@ -31,7 +31,7 @@
         ]>
 
 <rfc category="std"
-     docName="draft-mglt-ipsecme-implicit-iv-02.txt"
+     docName="draft-mglt-ipsecme-implicit-iv-03"
      ipr="trust200902">
     <front>
         <title abbrev="Implicit IV">Implicit IV for Counter-based Ciphers in IPsec </title>
