@@ -25,6 +25,7 @@
         <!ENTITY RFC6407 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6407.xml">
         <!ENTITY RFC7296 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7296.xml">
         <!ENTITY RFC7634 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7634.xml">
+        <!ENTITY RFC8174 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8174.xml">
          <!ENTITY I-D.ietf-ipsecme-rfc4307bis PUBLIC "" "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-ipsecme-rfc4307bis.xml">
          <!ENTITY I-D.ietf-ipsecme-rfc7321bis PUBLIC "" "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-ipsecme-rfc7321bis.xml">
          <!ENTITY I-D.yeung-g-ikev2 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.yeung-g-ikev2.xml">
@@ -85,13 +86,14 @@
         <area>INTERNET</area>
         <workgroup>IPSECME</workgroup>
         <abstract>
-            <t>IPsec ESP sends an initialization vector (IV) or nonce in each packet, adding 8 or 16 octets. Some algorithms such as AES-GCM, AES-CCM, AES-CTR and ChaCha20-Poly1305 require a unique nonce but do not require an unpredictable nonce. When using such algorithms the packet counter value can be used to generate a nonce, saving 8 octets per packet. This document describes how to do this.</t>
+            <t>IPsec ESP sends an initialization vector (IV) or nonce in each packet, adding 8 or 16 octets. Some algorithms such as AES-GCM, AES-CCM, AES-CTR and ChaCha20-Poly1305 require a unique nonce but do not require an unpredictable nonce. When using such algorithms the packet counter value can be used to generate a nonce, saving 8 octets per packet. This document describes this mechanism, called Implicit IV (IIV).</t>
         </abstract>
     </front>
 
     <middle>
         <section title="Requirements notation">
-            <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in <xref target="RFC2119"/>.</t>
+            <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in BCP 14 <xref target="RFC2119"/><xref target="RFC8174"/> when, and only when, they appear in all
+   capitals, as shown here.</t>
         </section>
         <section anchor="intro" title="Introduction">
               <t>Counter-based AES modes of operation such as AES-CTR (<xref target="RFC3686"/>), AES-CCM (<xref target="RFC4309"/>), and AES-GCM (<xref target="RFC4106"/>) require the specification of an nonce for each ESP packet. The same applies for ChaCha20-Poly1305 (<xref target="RFC7634"/>. Currently this nonce is sent in each ESP packet (<xref target="RFC4303"/>). This practice is designated in this document as "explicit nonce".</t>
@@ -123,6 +125,7 @@ such as BEAST <xref target="BEAST"/>.</t>
                 <list style="symbols">
                     <t>IoT: Internet of Things.</t>
                     <t>IV: Initialization Vector.</t>
+                    <t>IIV: Implicit Initialization Vector.</t>
                     <t>Nonce: a fixed-size octet string used only once. This is similar to IV, except that in common usage there is no implication of non-predictability.</t>
                 </list>
             </t>
@@ -237,7 +240,7 @@ such as BEAST <xref target="BEAST"/>.</t>
       <t> The rules of SA payload processing ensure that the responder will never send an SA payload containing the IIV indicator to an initiator that does not support IIV.</t>
     </section>
     <section title="Security Consideration">
-    <t>Nonce generation for these algorithms has not been explicitly defined. It has been left to the implementation as long as certain security requirements are met. This document provides an explicit and normative way to generate IVs. The mechanism described in this document meets the IV security requirements of all relevant algorithms.</t>
+    <t>Nonce generation for these algorithms has not been explicitly defined. It has been left to the implementation as long as certain security requirements are met (e.g. for AES-GCM, AES-CCM, AES-CTR and ChaCha20-Poly1305, this contains the IV is not allowed being repeated for one particular key). This document provides an explicit and normative way to generate IVs. The mechanism described in this document meets the IV security requirements of all relevant algorithms.</t>
 
     <t>As the IV MUST NOT repeat for one SPI when Counter-Mode ciphers are used, Implicit IV as described in this document MUST NOT be used in setups with the chance that the Sequence Number overlaps for one SPI. Multicast as described in <xref target="RFC5374"/>, <xref target="RFC6407"/> and <xref target="I-D.yeung-g-ikev2"/> is a prominent example, where many senders share one secret and thus one SPI. Section 3.5 of <xref target="RFC6407"/> explains how repetition MAY BE prevented by using a prefix for each group member, which could be prefixed to the Sequence Number. Otherwise, Implicit IV MUST NOT be used in multicast scenarios. </t>
     </section>
@@ -265,6 +268,7 @@ such as BEAST <xref target="BEAST"/>.</t>
             &RFC6407;
             &RFC7296;
             &RFC7634;
+            &RFC8174;
             &I-D.ietf-ipsecme-rfc4307bis;
             &I-D.ietf-ipsecme-rfc7321bis;
         </references>
