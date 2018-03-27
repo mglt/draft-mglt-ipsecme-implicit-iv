@@ -33,12 +33,12 @@
 ]>
 
 <rfc category="std"
-     docName="draft-ietf-ipsecme-implicit-iv-01"
+     docName="draft-ietf-ipsecme-implicit-iv-02"
      ipr="trust200902">
     <front>
         <title abbrev="Implicit IV in ESP">Implicit IV for Counter-based
 Ciphers in Encapsulating Security Payload (ESP) </title>
-        <author fullname="Daniel Migault" initials="D." surname="Migault" role="editor">
+        <author fullname="Daniel Migault" initials="D." surname="Migault">
             <organization>Ericsson</organization>
             <address>
                 <postal>
@@ -52,7 +52,7 @@ Ciphers in Encapsulating Security Payload (ESP) </title>
             </address>
         </author>
 
-        <author fullname="Tobias Guggemos" initials="T." surname="Guggemos" role="editor">
+        <author fullname="Tobias Guggemos" initials="T." surname="Guggemos">
             <organization>LMU Munich</organization>
             <address>
                 <postal>
@@ -168,15 +168,29 @@ non-predictability.</t>
 </section>
 
 <!--
-        <section anchor="sec-aes-cbc" title="Implicit IV with AES CBC">
-            <t>With AES-CBC, the IV is 16 bytes, random and unpredictable. In this document, the binding between IV and ESP packet is performed using the Sequence Number or the Extended Sequence Number. A clear text payload is derived from the Sequence Number or the Extended Sequence Number. In order to generate the IV randomly, AES is used as a random permutation. A dedicated 16 byte key is used for each peer. key_iv_initiator (resp. key_iv_responder) is used to derive the IV emitted by the initiator (resp. the responder).</t>
+       
+<section anchor="sec-aes-cbc" title="Implicit IV with AES CBC">
+            
+<t>With AES-CBC, the IV is 16 bytes, random and unpredictable. In this
+document, the binding between IV and ESP packet is performed using the
+Sequence Number or the Extended Sequence Number. A clear text payload is
+derived from the Sequence Number or the Extended Sequence Number. In
+order to generate the IV randomly, AES is used as a random permutation.
+A dedicated 16 byte key is used for each peer. key_iv_initiator (resp.
+key_iv_responder) is used to derive the IV emitted by the initiator
+(resp. the responder).</t>
 
-       <t>Keys key_iv_initiator and key_iv_responder MUST be agreed prior IPsec packets are exchanged. When IKEv2 <xref target="RFC7296"/> is used these keys are derived from the KEYMAT. key_iv_initiator is the first key generated, followed by key_iv_responder.</t>
+<t>Keys key_iv_initiator and key_iv_responder MUST be agreed prior IPsec
+packets are exchanged. When IKEv2 <xref target="RFC7296"/> is used these
+keys are derived from the KEYMAT. key_iv_initiator is the first key
+generated, followed by key_iv_responder.</t>
  
-<t><xref target="fig-aes-cbc-ct-sn"/> (resp. <xref target="fig-aes-cbc-ct-esn"/>) defines a clear text payload derived from a 4 byte Sequence Number (resp. a 8 byte Extended Sequence Number)</t>
+<t><xref target="fig-aes-cbc-ct-sn"/> (resp. <xref
+target="fig-aes-cbc-ct-esn"/>) defines a clear text payload derived from
+a 4 byte Sequence Number (resp. a 8 byte Extended Sequence Number)</t>
 
-            <figure anchor="fig-aes-cbc-ct-sn" title="Clear Text Payload for AES-CBC">
-                    <artwork><![CDATA[
+<figure anchor="fig-aes-cbc-ct-sn" title="Clear Text Payload for AES-CBC">
+<artwork><![CDATA[
 0                   1                   2                   3
 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
@@ -186,17 +200,18 @@ non-predictability.</t>
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
 |                      Sequence Number                          | 
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-                ]]></artwork>
-            </figure>
-        <t>Where,
-                <list hangIndent="3" style="hanging">
-                    <t hangText="-">Sequence Number: the 4 byte Sequence Number carried in the ESP packet.</t>
-                    <t hangText="-">Zero: a 12 byte array with all bits set to zero.</t>
-                </list>
-        </t>
+]]></artwork>
+</figure>
 
-            <figure anchor="fig-aes-cbc-ct-esn" title="Clear Text Payload for AES-CBC with Extended Sequence Number">
-                    <artwork><![CDATA[
+<t>Where,
+<list hangIndent="3" style="hanging">
+    <t hangText="-">Sequence Number: the 4 byte Sequence Number carried in the ESP packet.</t>
+    <t hangText="-">Zero: a 12 byte array with all bits set to zero.</t>
+                
+</list></t>
+
+<figure anchor="fig-aes-cbc-ct-esn" title="Clear Text Payload for AES-CBC with Extended Sequence Number">
+<artwork><![CDATA[
 0                   1                   2                   3
 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
@@ -206,15 +221,19 @@ non-predictability.</t>
 |                         Extended                              |
 |                      Sequence Number                          | 
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-                ]]></artwork>
-            </figure>
+]]></artwork>
+</figure>
 
-        <t>Where,
-                <list hangIndent="3" style="hanging">
-                    <t hangText="-">Extended Sequence Number: the 8 byte Extended Sequence Number of the Security Association. The 4 byte low order bytes are carried in the ESP packet.</t>
-                    <t hangText="-">Zero: a 8 byte array with all bits set to zero.</t>
-                </list>
-        </t>
+<t>Where,
+<list hangIndent="3" style="hanging">
+                    
+<t hangText="-">Extended Sequence Number: the 8 byte Extended Sequence
+Number of the Security Association. The 4 byte low order bytes are
+carried in the ESP packet.</t>
+                   
+<t hangText="-">Zero: a 8 byte array with all bits set to zero.</t>
+                
+</list></t>
 
         </section>
 -->
@@ -229,8 +248,8 @@ target="fig-aes-ctr-ccm-gcm-iv-esn"/> represent the IV with a regular
 4-byte Sequence Number and with an 8-byte Extended Sequence Number
 respectively.</t>
 
-            <figure anchor="fig-aes-ctr-ccm-gcm-iv-sn" title="Implicit IV with a 4 byte Sequence Number">
-                    <artwork><![CDATA[
+<figure anchor="fig-aes-ctr-ccm-gcm-iv-sn" title="Implicit IV with a 4 byte Sequence Number">
+        <artwork><![CDATA[
 0                   1                   2                   3
 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
@@ -238,24 +257,26 @@ respectively.</t>
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
 |                      Sequence Number                          | 
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-                ]]></artwork>
-            </figure>
-        <t><list style="symbols">
-            <t>Sequence Number: the 4 byte Sequence Number carried in the ESP packet.</t>
-            <t>Zero: a 4 byte array with all bits set to zero.</t>
-                </list>
-        </t>
+    ]]></artwork>
+</figure>
+<t><list style="symbols">
+   
+<t>Sequence Number: the 4 byte Sequence Number carried in the ESP packet.</t>
+    
+<t>Zero: a 4 byte array with all bits set to zero.</t>
+       
+</list></t>
 
-            <figure anchor="fig-aes-ctr-ccm-gcm-iv-esn" title="Implicit IV with an 8 byte Extended Sequence Number">
-                    <artwork><![CDATA[
+<figure anchor="fig-aes-ctr-ccm-gcm-iv-esn" title="Implicit IV with an 8 byte Extended Sequence Number">
+        <artwork><![CDATA[
 0                   1                   2                   3
 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
 |                         Extended                              |
 |                      Sequence Number                          | 
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-                ]]></artwork>
-            </figure>
+    ]]></artwork>
+</figure>
 
         <t><list style="symbols">
            
@@ -271,23 +292,56 @@ setups with the chance that the Sequence Number overlaps for one SPI.
 Multicast as described in <xref target="RFC5374"/>, <xref
 target="RFC6407"/> and <xref target="I-D.yeung-g-ikev2"/> is a prominent
 example, where many senders share one secret and thus one SPI. Section
-3.5 of <xref target="RFC6407"/> explains how repetition MAY BE prevented
-by using a prefix for each group member, which could be prefixed to the
-Sequence Number. Otherwise, Implicit IV MUST NOT be used in multicast
-scenarios. </t>
+3.5 of <xref target="RFC6407"/> provides a mechanism that MAY be used to
+prevent IV collisions when the same key is used by multiple users. The
+mechanism consists in partitioning the IV space between users by
+assigning the most significant byte to a user. When implicit IV
+transforms are used, such mechanism cannot be applied as the IV is not
+sent, but instead it is derived from the Sequence Number. A similar
+mechanism could be used by associating the most significant byte of the
+Sequence Number to a sender, while the 3 remaining bytes will be used to
+carry the counter value. Such mechanism prevents the use of Extended
+Sequence Number and limits the number of packet to be sent to 2** 24 =
+16777216, that is 16 M.</t>
+
+<t>Unless some mechanism are provided to avoid collision between
+Sequence Number, ( and so IV ), Implicit IV MUST NOT be used. </t>
 
 </section>
 
 
 <!--
     <section anchor="nego" title="Implicit IV Agreement">
-    <t>NOTE: THIS SECTION SHOWS SEVERAL WAYS TO DO THE SAME THING. OBVIOUSLY THIS DOCUMENT WILL NOT BE PUBLISHED LIKE THAT. WE EXPECT WG DISCUSSION TO PARE THIS DOWN TO JUST ONE WAY OF NEGOTIATING THE USE OF IMPLICIT IV (IIV).</t>
-    <t>Negotiation of the use of implicit IV can be done in 3 different ways: <list style="symbols">
-         <t> An IMPLICIT IV Transform Type. A proposal that contains this transform type requires (if accepted) that IPsec use the implicit IV and not include an explicit IV in the packets. To facilitate backward compatibility with non-supporting implementations the Initiator SHOULD add another proposal that does not include this transform type as well as cryptographic suite the Initiator does not support the implicit IV.</t>
-         <t> An IMPLICIT IV Transform ID. This doubles the number of ENCR transform IDs by creating an ENCR_AES_CCM_16_IIV for each ENCR_AES_CCM_16.</t>
-          <t> An IMPLICIT IV Transform Attribute, which would be associated to a Transform Type ID, specifying the use of an implicit IV. marks a particular ENCR transform as using implicit IVs. To facilitate backward compatibility with non-supporting implementations the Initiator SHOULD add another ENCR transform for each algorithm so marked. In other words, for each ENCR_AES_CCM_16 with keylength=256 and IIV=1, there will need to be an ENCR_AES_CCM_16 with keylength=256 and no IIV attribute.</t>
-    </list>
-    </t>
+
+<t>NOTE: THIS SECTION SHOWS SEVERAL WAYS TO DO THE SAME THING. OBVIOUSLY
+THIS DOCUMENT WILL NOT BE PUBLISHED LIKE THAT. WE EXPECT WG DISCUSSION
+TO PARE THIS DOWN TO JUST ONE WAY OF NEGOTIATING THE USE OF IMPLICIT IV
+(IIV).</t>
+
+<t>Negotiation of the use of implicit IV can be done in 3 different
+ways: <list style="symbols">
+        
+<t> An IMPLICIT IV Transform Type. A proposal that contains this
+transform type requires (if accepted) that IPsec use the implicit IV and
+not include an explicit IV in the packets. To facilitate backward
+compatibility with non-supporting implementations the Initiator SHOULD
+add another proposal that does not include this transform type as well
+as cryptographic suite the Initiator does not support the implicit
+IV.</t>
+        
+<t> An IMPLICIT IV Transform ID. This doubles the number of ENCR
+transform IDs by creating an ENCR_AES_CCM_16_IIV for each
+ENCR_AES_CCM_16.</t>
+          
+<t> An IMPLICIT IV Transform Attribute, which would be associated to a
+Transform Type ID, specifying the use of an implicit IV. marks a
+particular ENCR transform as using implicit IVs. To facilitate backward
+compatibility with non-supporting implementations the Initiator SHOULD
+add another ENCR transform for each algorithm so marked. In other words,
+for each ENCR_AES_CCM_16 with keylength=256 and IIV=1, there will need
+to be an ENCR_AES_CCM_16 with keylength=256 and no IIV attribute.</t>
+   
+</list> </t>
 
     </section>
 -->
@@ -304,10 +358,10 @@ transforms.</t>
     
 <section title="Responder Behavior">
       
-<t> The rules of SA payload processing ensure that the responder will
-never send an SA payload containing the IIV indicator to an initiator
+<t>The rules of SA payload processing ensure that the responder will
+never send an SA payload containing the IIV transform to an initiator
 that does not support IIV.</t>
-    
+
 </section> <section title="Security Consideration"> 
 
 <t>Nonce generation for these algorithms has not been explicitly
@@ -322,7 +376,7 @@ security requirements of all relevant algorithms.</t>
 
     <section title="IANA Considerations">
 
-<t>AES-CTR, AES-CCM, AES-GCM and ChaCha20-Poly1305 are likely to
+<t>AES-CCM, AES-GCM and ChaCha20-Poly1305 are likely to
 implement the implicit IV described in this document. This section
 limits assignment of new code points to the recommended suites provided
 in <xref target="RFC8221"/>, thus the new Transform Type 1 - Encryption
