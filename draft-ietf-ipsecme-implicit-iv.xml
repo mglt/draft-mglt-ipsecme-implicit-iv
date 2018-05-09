@@ -18,6 +18,7 @@
 <!ENTITY RFC3686 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3686.xml">
 <!ENTITY RFC4104 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4104.xml">
 <!ENTITY RFC4106 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4106.xml">
+<!ENTITY RFC4302 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4302.xml">
 <!ENTITY RFC4303 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4303.xml">
 <!ENTITY RFC4309 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4309.xml">
 <!ENTITY RFC4434 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4434.xml">
@@ -95,7 +96,7 @@ the time this document is written. Some algorithms such as AES-GCM,
 AES-CCM, AES-CTR and ChaCha20-Poly1305 require a unique nonce but do not
 require an unpredictable nonce. When using such algorithms the packet
 counter value can be used to generate a nonce. This avoids sending the
-nonce itself, and savec in the case of AES-GCM, AES-CCM, AES-CTR and
+nonce itself, and saves in the case of AES-GCM, AES-CCM, AES-CTR and
 ChaCha20-Poly1305 8 octets per packet. This document describes how to do
 this.</t>
 
@@ -118,7 +119,7 @@ target="RFC2119"/>.</t>
 target="RFC3686"/>), AES-CCM (<xref target="RFC4309"/>), and AES-GCM
 (<xref target="RFC4106"/>) require the specification of an nonce for
 each ESP packet. The same applies for ChaCha20-Poly1305 (<xref
-target="RFC7634"/>. Currently this nonce is sent in each ESP packet
+target="RFC7634"/>). Currently this nonce is sent in each ESP packet
 (<xref target="RFC4303"/>). This practice is designated in this document
 as "explicit nonce".</t>
 
@@ -285,12 +286,12 @@ packet.</t>
         
 </list></t>
    
-<t>As the IV MUST NOT repeat for one SPI when Counter-Mode ciphers are
+<t>As the IV MUST NOT repeat for one SA when Counter-Mode ciphers are
 used, Implicit IV as described in this document MUST NOT be used in
-setups with the chance that the Sequence Number overlaps for one SPI.
+setups with the chance that the Sequence Number overlaps for one SA.
 Multicast as described in <xref target="RFC5374"/>, <xref
 target="RFC6407"/> and <xref target="I-D.yeung-g-ikev2"/> is a prominent
-example, where many senders share one secret and thus one SPI. Section
+example, where many senders share one secret and thus one SA. Section
 3.5 of <xref target="RFC6407"/> provides a mechanism that MAY be used to
 prevent IV collisions when the same key is used by multiple users. The
 mechanism consists in partitioning the IV space between users by
@@ -301,10 +302,17 @@ mechanism could be used by associating the most significant byte of the
 Sequence Number to a sender, while the 3 remaining bytes will be used to
 carry the counter value. Such mechanism prevents the use of Extended
 Sequence Number and limits the number of packet to be sent to 2** 24 =
-16777216, that is 16 M.</t>
+16777216, that is 16 M. Note that associating instead the least
+significant byte of the Sequence Number to the sender, would enable the
+system to use Extended Sequence Number and as such extend the limit of
+packet to be sent to 2 ** ( 24 + 32 ) = 72057594037927936, that is 72 P.
+Note also that in both cases the Sequence Number are not interpreted as
+numeric values which impacts the replay window processing defined in
+<xref target="RFC4302"/> and <xref target="RFC4302"/>.</t>
 
 <t>Unless some mechanism are provided to avoid collision between
-Sequence Number, ( and so IV ), Implicit IV MUST NOT be used. </t>
+Sequence Number, ( and so IV ), Implicit IV MUST NOT be used. As such,
+it is NOT RECOMMENDED to use Implicit IV with Multicast.</t>
 
 </section>
 
@@ -346,20 +354,23 @@ to be an ENCR_AES_CCM_16 with keylength=256 and no IIV attribute.</t>
 -->
 
     <section title="Initiator Behavior">
-      
-<t> An initiator supporting this feature SHOULD propose implicit IV for
-all relevant algorithms. To facilitate backward compatibility with
-non-supporting peers the initiator SHOULD also include those same
-algorithms without Implicit IV (IIV). This may require extra
+
+<t>An initiator supporting this feature SHOULD propose implicit IV
+algorithms in the Transform Type 1 (Encryption Algorithm) Substructure
+of the Proposal Substructure inside the SA Payload. To facilitate
+backward compatibility with non-supporting peers the initiator SHOULD
+also include those same algorithms without Implicit IV (IIV) as separate
 transforms.</t>
+
     
 </section>
     
 <section title="Responder Behavior">
       
-<t>The rules of SA payload processing ensure that the responder will
-never send an SA payload containing the IIV transform to an initiator
-that does not support IIV.</t>
+<t>The rules of SA Payload processing require that responder picks its
+algorithms from the proposal sent by the initiator, thus this will
+ensure that the responder will never send an SA payload containing the
+IIV transform to an initiator that did not propose it.</t>
 
 </section> <section title="Security Consideration"> 
 
@@ -375,16 +386,15 @@ security requirements of all relevant algorithms.</t>
 
     <section title="IANA Considerations">
 
-<t>AES-CCM, AES-GCM and ChaCha20-Poly1305 are likely to
-implement the implicit IV described in this document. This section
-limits assignment of new code points to the recommended suites provided
-in <xref target="RFC8221"/>, thus the new Transform Type 1 - Encryption
-Algorithm Transform IDs <xref target="IANA"/> are as defined below:
+<t>This section assigns new code points to the recommended AEAD suites
+provided in <xref target="RFC8221"/>, thus the new Transform Type 1 -
+Encryption Algorithm Transform IDs <xref target="IANA"/> are as defined
+below:
 
 <list hangIndent="3" style="hanging"> 
-<t hangText="-">ENCR_AES_CCM_8_IIV</t> 
-<t hangText="-">ENCR_AES_GCM_16_IIV</t> 
-<t hangText="-">ENCR_CHACHA20_POLY1305_IIV</t> 
+<t hangText="-">ENCR_AES_CCM_8_IIV: 29</t> 
+<t hangText="-">ENCR_AES_GCM_16_IIV: 30</t> 
+<t hangText="-">ENCR_CHACHA20_POLY1305_IIV: 31</t> 
 </list></t> 
 
 <t>These algorithms should be added with this document as ESP Reference
@@ -407,6 +417,7 @@ forward.</t>
             &RFC3602;
             &RFC3686;
             &RFC4106;
+            &RFC4302;
             &RFC4303;
             &RFC4309;
             &RFC5374;
