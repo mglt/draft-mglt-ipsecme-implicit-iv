@@ -34,7 +34,7 @@
 ]>
 
 <rfc category="std"
-     docName="draft-ietf-ipsecme-implicit-iv-03"
+     docName="draft-ietf-ipsecme-implicit-iv-04"
      ipr="trust200902">
     <front>
         <title abbrev="Implicit IV in ESP">Implicit IV for Counter-based
@@ -291,7 +291,12 @@ used, Implicit IV as described in this document MUST NOT be used in
 setups with the chance that the Sequence Number overlaps for one SA.
 Multicast as described in <xref target="RFC5374"/>, <xref
 target="RFC6407"/> and <xref target="I-D.yeung-g-ikev2"/> is a prominent
-example, where many senders share one secret and thus one SA. Section
+example, where many senders share one secret and thus one SA. 
+As such,
+it is NOT RECOMMENDED to use Implicit IV with Multicast.</t>
+
+<!--
+<t>Section
 3.5 of <xref target="RFC6407"/> provides a mechanism that MAY be used to
 prevent IV collisions when the same key is used by multiple users. The
 mechanism consists in partitioning the IV space between users by
@@ -313,6 +318,7 @@ numeric values which impacts the replay window processing defined in
 <t>Unless some mechanism are provided to avoid collision between
 Sequence Number, ( and so IV ), Implicit IV MUST NOT be used. As such,
 it is NOT RECOMMENDED to use Implicit IV with Multicast.</t>
+-->
 
 </section>
 
@@ -417,7 +423,7 @@ forward.</t>
             &RFC3602;
             &RFC3686;
             &RFC4106;
-            &RFC4302;
+            <!-- &RFC4302; -->
             &RFC4303;
             &RFC4309;
             &RFC5374;
