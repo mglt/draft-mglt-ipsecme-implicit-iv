@@ -34,7 +34,7 @@
 ]>
 
 <rfc category="std"
-     docName="draft-ietf-ipsecme-implicit-iv-05"
+     docName="draft-ietf-ipsecme-implicit-iv-06"
      ipr="trust200902">
     <front>
         <title abbrev="Implicit IV in ESP">Implicit IV for Counter-based
