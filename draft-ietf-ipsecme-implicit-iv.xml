@@ -34,7 +34,7 @@
 ]>
 
 <rfc category="std"
-     docName="draft-ietf-ipsecme-implicit-iv-06"
+     docName="draft-ietf-ipsecme-implicit-iv-07"
      ipr="trust200902">
     <front>
         <title abbrev="Implicit IV in ESP">Implicit IV for Counter-based
@@ -286,7 +286,12 @@ packet.</t>
         
 </list></t>
 
-
+<t> This document solely defines the IV generation of the algorithms
+defined in [RFC4106] for AES-GCM, [RFC4309] for AES-CCM and [RFC7634]
+for ChaCha20-Poly1305. Any other aspect (including using the Key Length
+attribute) of applying those ciphers with the new Transform Types
+defined in this document MUST be taken from the documents defining the
+use of the algorithms in ESP.  </t>
 
 <!--
 <t>Section
