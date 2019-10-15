@@ -437,11 +437,12 @@ and "Not Allowed" for IKEv2 Reference.</t>
 
     <section title="Acknowledgements">
 
-<t>We would like to thank  Valery Smyslov, Eric Vyncke, Magnus
-Nystrom (security directorate), and Benjamin Kaduk (Security AD) for
-their valuable comments, David Schinazi for its implementation,  as well
-as the ipseceme chairs Tero Kivinen and David Waltermire for moving this
-work forward.</t>
+<t>We would like to thank  Valery Smyslov, Eric Vyncke, Magnus Nystrom
+(security directorate), as well as our three ADs Eric Rescorla, Benjamin
+Kaduk and Roman Danyliw for their valuable comments. We also would like
+to thank David Schinazi for its implementation,  as well as the ipseceme
+chairs Tero Kivinen and David Waltermire for moving this work
+forward.</t>
 
 <t>NOTE TO THE EDITOR Eric has a accent on E and Magnus has double
 points on o.</t>

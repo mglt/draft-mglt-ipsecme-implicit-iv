@@ -288,10 +288,11 @@ Internet-Draft             Implicit IV in ESP               October 2019
 9.  Acknowledgements
 
    We would like to thank Valery Smyslov, Eric Vyncke, Magnus Nystrom
-   (security directorate), and Benjamin Kaduk (Security AD) for their
-   valuable comments, David Schinazi for its implementation, as well as
-   the ipseceme chairs Tero Kivinen and David Waltermire for moving this
-   work forward.
+   (security directorate), as well as our three ADs Eric Rescorla,
+   Benjamin Kaduk and Roman Danyliw for their valuable comments.  We
+   also would like to thank David Schinazi for its implementation, as
+   well as the ipseceme chairs Tero Kivinen and David Waltermire for
+   moving this work forward.
 
    NOTE TO THE EDITOR Eric has a accent on E and Magnus has double
    points on o.
@@ -328,7 +329,6 @@ Internet-Draft             Implicit IV in ESP               October 2019
               Mode with IPsec Encapsulating Security Payload (ESP)",
               RFC 4309, DOI 10.17487/RFC4309, December 2005,
               <https://www.rfc-editor.org/info/rfc4309>.
-
 
 
 
