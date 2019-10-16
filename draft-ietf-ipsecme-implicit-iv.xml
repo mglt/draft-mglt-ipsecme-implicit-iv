@@ -366,10 +366,10 @@ to be an ENCR_AES_CCM_16 with keylength=256 and no IIV attribute.</t>
 
 <t>An initiator supporting this feature SHOULD propose implicit IV
 algorithms in the Transform Type 1 (Encryption Algorithm) Substructure
-of the Proposal Substructure inside the SA Payload in the IKEv2
-Exchange. To facilitate backward compatibility with non-supporting peers
-the initiator SHOULD also include those same algorithms without Implicit
-IV (IIV) as separate transforms.</t>
+of the Proposal Substructure inside the Security Association Payload (SA
+Payload) in the IKEv2 Exchange. To facilitate backward compatibility
+with non-supporting peers the initiator SHOULD also include those same
+algorithms without Implicit IV (IIV) as separate transforms.</t>
 
     
 </section>
@@ -415,7 +415,7 @@ don't contain a unique per-message value that can be used for IV
 generation. The Message-ID field in IKEv2 header is similar to the SN
 field in ESP header, but recent IKEv2 extensions (<xref
 target="RFC6311"/>, <xref target="RFC7383"/>) do allow it to repeat, so
-there is no an easy way to derive unique IV from IKEv2 header
+there is not an easy way to derive unique IV from IKEv2 header
 fields.</t>
 
 </section>
