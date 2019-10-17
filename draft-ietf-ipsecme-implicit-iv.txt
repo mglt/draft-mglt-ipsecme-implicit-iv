@@ -5,10 +5,10 @@
 IPSECME                                                       D. Migault
 Internet-Draft                                                  Ericsson
 Intended status: Standards Track                             T. Guggemos
-Expires: April 17, 2020                                       LMU Munich
+Expires: April 18, 2020                                       LMU Munich
                                                                   Y. Nir
                                                                 Dell EMC
-                                                        October 15, 2019
+                                                        October 16, 2019
 
 
 Implicit IV for Counter-based Ciphers in Encapsulating Security Payload
@@ -45,7 +45,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on April 17, 2020.
+   This Internet-Draft will expire on April 18, 2020.
 
 
 
@@ -53,7 +53,7 @@ Status of This Memo
 
 
 
-Migault, et al.          Expires April 17, 2020                 [Page 1]
+Migault, et al.          Expires April 18, 2020                 [Page 1]
 
 Internet-Draft             Implicit IV in ESP               October 2019
 
@@ -104,12 +104,12 @@ Table of Contents
    ESP packet.  The same applies for ChaCha20-Poly1305 ([RFC7634]).
    Currently this nonce is generated thanks to the Initialize Vector
    (IV) provided in each ESP packet ([RFC4303]).  This practice is
-   designated in this document as "explicit nonce".
+   designated in this document as "explicit IV".
 
 
 
 
-Migault, et al.          Expires April 17, 2020                 [Page 2]
+Migault, et al.          Expires April 18, 2020                 [Page 2]
 
 Internet-Draft             Implicit IV in ESP               October 2019
 
@@ -148,8 +148,8 @@ Internet-Draft             Implicit IV in ESP               October 2019
 
    o  IIV: Implicit Initialization Vector.
 
-   o  Nonce: a fixed-size octet string used only once.  In our case, th
-      enonce takes the IV as input and is provided as an input parameter
+   o  Nonce: a fixed-size octet string used only once.  In our case, the
+      nonce takes the IV as input and is provided as an input parameter
       for encryption/decryption.
 
 4.  Implicit IV
@@ -165,7 +165,7 @@ Internet-Draft             Implicit IV in ESP               October 2019
 
 
 
-Migault, et al.          Expires April 17, 2020                 [Page 3]
+Migault, et al.          Expires April 18, 2020                 [Page 3]
 
 Internet-Draft             Implicit IV in ESP               October 2019
 
@@ -206,13 +206,13 @@ Internet-Draft             Implicit IV in ESP               October 2019
 
 5.  IKEv2 Initiator Behavior
 
-   An initiator supporting this feature SHOULD propose implicit IV
+   An initiator supporting this feature SHOULD propose implicit IV (IIV)
    algorithms in the Transform Type 1 (Encryption Algorithm)
    Substructure of the Proposal Substructure inside the Security
    Association Payload (SA Payload) in the IKEv2 Exchange.  To
    facilitate backward compatibility with non-supporting peers the
-   initiator SHOULD also include those same algorithms without Implicit
-   IV (IIV) as separate transforms.
+   initiator SHOULD also include those same algorithms with explicit IV
+   as separate transforms.
 
 
 
@@ -221,7 +221,7 @@ Internet-Draft             Implicit IV in ESP               October 2019
 
 
 
-Migault, et al.          Expires April 17, 2020                 [Page 4]
+Migault, et al.          Expires April 18, 2020                 [Page 4]
 
 Internet-Draft             Implicit IV in ESP               October 2019
 
@@ -244,7 +244,7 @@ Internet-Draft             Implicit IV in ESP               October 2019
    IV security requirements of all relevant algorithms.
 
    As the IV must not repeat for one SA when Counter-Mode ciphers are
-   used, Implicit IV as described in this document MUST NOT be used in
+   used, implicit IV as described in this document MUST NOT be used in
    setups with the chance that the Sequence Number overlaps for one SA.
    The sender's counter and the receiver's counter MUST be reset (by
    establishing a new SA and thus a new key) prior to the transmission
@@ -277,7 +277,7 @@ Internet-Draft             Implicit IV in ESP               October 2019
 
 
 
-Migault, et al.          Expires April 17, 2020                 [Page 5]
+Migault, et al.          Expires April 18, 2020                 [Page 5]
 
 Internet-Draft             Implicit IV in ESP               October 2019
 
@@ -333,7 +333,7 @@ Internet-Draft             Implicit IV in ESP               October 2019
 
 
 
-Migault, et al.          Expires April 17, 2020                 [Page 6]
+Migault, et al.          Expires April 18, 2020                 [Page 6]
 
 Internet-Draft             Implicit IV in ESP               October 2019
 
@@ -389,7 +389,7 @@ Internet-Draft             Implicit IV in ESP               October 2019
 
 
 
-Migault, et al.          Expires April 17, 2020                 [Page 7]
+Migault, et al.          Expires April 18, 2020                 [Page 7]
 
 Internet-Draft             Implicit IV in ESP               October 2019
 
@@ -445,4 +445,4 @@ Authors' Addresses
 
 
 
-Migault, et al.          Expires April 17, 2020                 [Page 8]
+Migault, et al.          Expires April 18, 2020                 [Page 8]

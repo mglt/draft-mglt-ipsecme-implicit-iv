@@ -124,7 +124,7 @@ specification of an nonce for each ESP packet. The same applies for
 ChaCha20-Poly1305 (<xref target="RFC7634"/>). Currently this nonce is
 generated thanks to the Initialize Vector (IV) provided in each ESP
 packet (<xref target="RFC4303"/>). This practice is designated in this
-document as "explicit nonce".</t>
+document as "explicit IV".</t>
 
 <t>In some contexts, such as IoT, it may be preferable to avoid carrying
 the extra bytes associated to the IV and instead generate it locally on
@@ -165,8 +165,7 @@ target="RFC8221"/>.</t>
 
 <t>IIV: Implicit Initialization Vector.</t>
 
-<t>Nonce: a fixed-size octet string used only once. In our case, th
-enonce takes the IV as input and is provided as an input parameter for
+<t>Nonce: a fixed-size octet string used only once. In our case, the nonce takes the IV as input and is provided as an input parameter for
 encryption/decryption. </t>
                 
 </list></t>
@@ -364,12 +363,12 @@ to be an ENCR_AES_CCM_16 with keylength=256 and no IIV attribute.</t>
 
     <section title="IKEv2 Initiator Behavior">
 
-<t>An initiator supporting this feature SHOULD propose implicit IV
+<t>An initiator supporting this feature SHOULD propose implicit IV (IIV)
 algorithms in the Transform Type 1 (Encryption Algorithm) Substructure
 of the Proposal Substructure inside the Security Association Payload (SA
 Payload) in the IKEv2 Exchange. To facilitate backward compatibility
 with non-supporting peers the initiator SHOULD also include those same
-algorithms without Implicit IV (IIV) as separate transforms.</t>
+algorithms with explicit IV as separate transforms.</t>
 
     
 </section>
@@ -392,7 +391,7 @@ generate IVs. The mechanism described in this document meets the IV
 security requirements of all relevant algorithms.</t>  
 
 <t> As the IV must not repeat for one SA when Counter-Mode ciphers are
-used, Implicit IV as described in this document MUST NOT be used in
+used, implicit IV as described in this document MUST NOT be used in
 setups with the chance that the Sequence Number overlaps for one SA.
 The sender's counter and the receiver's counter MUST be reset (by
 establishing a new SA and thus a new key) prior to the transmission of
