@@ -95,12 +95,12 @@ Ciphers in Encapsulating Security Payload (ESP) </title>
 being usually 8 or 16 octets for the transforms defined by the time this
 document is written. Some algorithms such as AES-GCM, AES-CCM and
 ChaCha20-Poly1305 when used with IPsec, take the IV to generate a nonce
-that is used as an input parameter for encrypting and decrypting. These
-algorithms require a unique IV but do not require an unpredictable IV.
-As a result, the value provided in the ESP Sequence Number (SN) can be
-used instead to generate the nonce. This avoids sending the IV itself,
-and saves in the case of AES-GCM, AES-CCM and ChaCha20-Poly1305 8 octets
-per packet. This document describes how to do this.</t>
+that is used as an input parameter for encrypting and decrypting. This
+IV must be unique but can be predictable.  As a result, the value
+provided in the ESP Sequence Number (SN) can be used instead to generate
+the nonce. This avoids sending the IV itself, and saves in the case of
+AES-GCM, AES-CCM and ChaCha20-Poly1305 8 octets per packet. This
+document describes how to do this.</t>
 
 </abstract>
     </front>
@@ -122,7 +122,7 @@ they appear in all capitals, as shown here.</t>
 target="RFC4309"/>), and AES-GCM (<xref target="RFC4106"/>) require the
 specification of an nonce for each ESP packet. The same applies for
 ChaCha20-Poly1305 (<xref target="RFC7634"/>). Currently this nonce is
-generated thanks to the Initialize Vector (IV) provided in each ESP
+generated thanks to the Initialization Vector (IV) provided in each ESP
 packet (<xref target="RFC4303"/>). This practice is designated in this
 document as "explicit IV".</t>
 
@@ -141,7 +141,7 @@ implicit IV versus an explicit IV.</t>
 
 <t>This document limits its scope to the algorithms mentioned above.
 Other algorithms with similar properties may later be defined to use
-similar mechanism.</t> 
+similar mechanisms.</t> 
 
 <t> This document does not consider AES-CBC (<xref target="RFC3602"/>)
 as AES-CBC requires the IV to be unpredictable. Deriving it directly
